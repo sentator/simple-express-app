@@ -7,8 +7,8 @@ const router = Router();
 router.get('/', usersController.getUsers);
 router.post('/', usersController.createUser);
 router.get('/:id', checkValidId, usersController.getUser);
-router.put('/:id', checkValidId, usersController.updateUser);
-router.patch('/:id', checkValidId, usersController.replaceUser);
+router.put('/:id', checkValidId, usersController.replaceUser);
+router.patch('/:id', checkValidId, usersController.updateUser);
 router.delete('/:id', checkValidId, usersController.deleteUser);
 
 export default router;

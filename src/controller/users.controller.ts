@@ -1,29 +1,38 @@
 import { Request, Response } from 'express';
-import data from '../../assets/data.json';
-import { UserRequestBody } from '../types';
+import { User, UserRequestBody } from '../types';
 import { isValidAge, isValidName } from '../utils';
-
-const users = [...data];
-
+import db from '../db';
 class UsersController {
-  getUsers(req: Request, res: Response) {
-    res.status(200).json(users);
-  }
-
-  getUser(req: Request, res: Response) {
-    const id = Number(req.params.id);
-    const user = users.find((user) => user.id === id);
-
-    if (!user) {
-      return res.status(404).json({
-        message: 'User with the requested id does not exist',
-      });
+  async getUsers(req: Request, res: Response) {
+    try {
+      const result = await db.query<User[]>('SELECT * FROM users');
+      res.status(200).json(result.rows);
+    } catch (error) {
+      res.status(500).json(error);
     }
-
-    res.status(200).json(user);
   }
 
-  createUser(req: Request, res: Response) {
+  async getUser(req: Request, res: Response) {
+    const id = Number(req.params.id);
+
+    try {
+      const result = await db.query<User>('SELECT * FROM users WHERE id = $1', [
+        id,
+      ]);
+
+      if (!result.rows[0]) {
+        return res.status(404).json({
+          message: 'User with the requested id does not exist',
+        });
+      }
+
+      res.status(200).json(result.rows[0]);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
+
+  async createUser(req: Request, res: Response) {
     const body: UserRequestBody = req.body;
     const isValidBody = isValidName(body.name) && isValidAge(body.age);
     if (!isValidBody) {
@@ -31,23 +40,22 @@ class UsersController {
         message: 'Incorrect body was provided.',
       });
     }
-    const userId = users.length + 1;
-    users.push({ id: userId, name: body.name, age: body.age });
-    res.status(200).json({ id: userId });
+
+    try {
+      const result = await db.query<User>(
+        'INSERT INTO users (name, age) VALUES ($1, $2) RETURNING *',
+        [body.name, body.age],
+      );
+      res.status(200).json(result.rows[0]);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   }
 
-  replaceUser(req: Request, res: Response) {
+  async replaceUser(req: Request, res: Response) {
     const id = Number(req.params.id);
     const body: UserRequestBody = req.body;
     const isValidBody = isValidName(body.name) && isValidAge(body.age);
-
-    const userIndex = users.findIndex((user) => user.id === id);
-
-    if (userIndex === -1) {
-      return res.status(404).json({
-        message: 'User with the requested id does not exist',
-      });
-    }
 
     if (!isValidBody) {
       return res.status(404).json({
@@ -55,12 +63,25 @@ class UsersController {
       });
     }
 
-    const updatedUser = { id, name: body.name, age: body.age };
-    users[userIndex] = updatedUser;
-    res.status(200).json(updatedUser);
+    try {
+      const result = await db.query<User>(
+        'UPDATE users SET name = $1, age = $2 WHERE id = $3 RETURNING *',
+        [body.name, body.age, id],
+      );
+
+      if (!result.rows[0]) {
+        return res.status(404).json({
+          message: 'User with the requested id does not exist',
+        });
+      }
+
+      res.status(200).json(result.rows[0]);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   }
 
-  updateUser(req: Request, res: Response) {
+  async updateUser(req: Request, res: Response) {
     const id = Number(req.params.id);
     const body: Partial<UserRequestBody> = req.body;
     const isEmptyBody = !body.name && !body.age;
@@ -69,34 +90,55 @@ class UsersController {
         message: "Body can't be empty",
       });
     }
-    const userIndex = users.findIndex((user) => user.id === id);
-    if (userIndex === -1) {
-      return res.status(404).json({
-        message: 'User with the requested id does not exist',
-      });
+
+    try {
+      const userRequest = await db.query<User>(
+        'SELECT * FROM users WHERE id = $1',
+        [id],
+      );
+      const savedUser = userRequest.rows[0];
+
+      if (!savedUser) {
+        return res.status(404).json({
+          message: 'User with the requested id does not exist',
+        });
+      }
+
+      const updatedUser = {
+        name: isValidName(body.name) ? body.name : savedUser.name,
+        age: isValidAge(body.age) ? body.age : savedUser.age,
+      };
+
+      const result = await db.query<User>(
+        'UPDATE users SET name = $1, age = $2 WHERE id = $3 RETURNING *',
+        [updatedUser.name, updatedUser.age, id],
+      );
+
+      res.status(200).json(result.rows[0]);
+    } catch (error) {
+      res.status(500).json(error);
     }
-    const updatedUser = {
-      id,
-      name: isValidName(body.name) ? body.name : users[userIndex].name,
-      age: isValidAge(body.age) ? body.age : users[userIndex].age,
-    };
-    users[userIndex] = updatedUser;
-    res.status(200).json(updatedUser);
   }
 
-  deleteUser(req: Request, res: Response) {
+  async deleteUser(req: Request, res: Response) {
     const id = Number(req.params.id);
 
-    const userIndex = users.findIndex((user) => user.id === id);
+    try {
+      const result = await db.query(
+        'DELETE FROM users WHERE id = $1 RETURNING *',
+        [id],
+      );
 
-    if (userIndex === -1) {
-      return res.status(404).json({
-        message: 'User with the requested id does not exist',
-      });
+      if (!result.rows[0]) {
+        return res.status(404).json({
+          message: 'User with the requested id does not exist',
+        });
+      }
+
+      res.status(200).json({ id });
+    } catch (error) {
+      res.status(500).json(error);
     }
-
-    users.splice(userIndex, 1);
-    res.status(200).json({ id });
   }
 }
 
