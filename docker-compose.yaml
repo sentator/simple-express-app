@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  main:
+    container_name: express_app
+    build:
+      context: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - $PORT:$PORT
+    command: npm run dev
+    depends_on:
+      - postgres
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_DB: $POSTGRES_DATABASE
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    ports:
+      - $POSTGRES_PORT:$POSTGRES_PORT
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./src/database/docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+    restart: always
+volumes:
+  pgdata:
