@@ -9,7 +9,7 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - 5000:5000
+      - $PORT:$PORT
     command: npm run dev
     depends_on:
       - postgres
@@ -20,14 +20,14 @@ services:
     image: postgres
     environment:
       PG_DATA: /var/lib/postgresql/data
-      POSTGRES_DB: 'users_express'
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: 'L1953TR'
+      POSTGRES_DB: $POSTGRES_DATABASE
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     ports:
       - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+      - ./src/database/docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
     restart: always
 volumes:
   pgdata:

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { User, UserRequestBody } from '../types';
 import { isValidAge, isValidName } from '../utils';
-import db from '../db';
+import db from '../database/index';
 class UsersController {
   async getUsers(req: Request, res: Response) {
     try {
