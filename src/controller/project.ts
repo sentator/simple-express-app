@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import db from '../database/index';
 import { Project } from '../types';
 
-class ProjectsController {
+class ProjectController {
   async getProjects(req: Request, res: Response) {
     const offset = req.query.offset ?? 0;
     const limit = req.query.limit ?? 100;
@@ -42,4 +42,4 @@ class ProjectsController {
   }
 }
 
-export default new ProjectsController();
+export default new ProjectController();
