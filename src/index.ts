@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 
-import { executor, project } from './routes';
+import { executor, project, architect } from './routes';
 import { cors } from './middlewares';
 import { AppDataSource } from './database/data-source';
 
@@ -13,6 +13,7 @@ app.use(cors);
 
 app.use('/projects', project);
 app.use('/executors', executor);
+app.use('/architects', architect);
 
 const PORT = process.env.PORT ?? 5000;
 

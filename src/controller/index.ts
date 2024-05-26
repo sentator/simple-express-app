@@ -1,4 +1,5 @@
 import executor from './executor';
 import project from './project';
+import architect from './architect';
 
-export { executor, project };
+export { executor, project, architect };
