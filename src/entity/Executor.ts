@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Project } from './index';
 
 @Entity()
 export class Executor {
@@ -13,4 +14,7 @@ export class Executor {
 
   @Column()
   email: string = '';
+
+  @OneToMany(() => Project, (project) => project.executor)
+  project: Project | null = null;
 }

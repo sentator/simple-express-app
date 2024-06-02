@@ -1,5 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+  RelationId,
+} from 'typeorm';
 import { ProjectStatus } from '../types';
+import { Architect, Executor } from './index';
 
 @Entity()
 export class Project {
@@ -16,13 +25,14 @@ export class Project {
   })
   status: ProjectStatus = 'not_started';
 
-  @Column({
-    type: 'varchar',
-    nullable: true,
-    default: null,
-  })
-  executor_id: string | null = null;
+  @ManyToOne(() => Executor, (executor) => executor.project)
+  @JoinTable()
+  executor: Executor | null = null;
 
-  @Column()
-  architectors_quantity: number = 0;
+  @RelationId((project: Project) => project.executor)
+  executor_id: Executor['executor_id'] | null = null;
+
+  @ManyToMany(() => Architect)
+  @JoinTable()
+  architects: Architect[] | null = null;
 }
