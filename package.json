@@ -8,7 +8,8 @@
     "dev": "nodemon ./src/index.ts",
     "build": "tsc --project ./",
     "lint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix"
+    "lint:fix": "eslint . --ext .ts --fix",
+    "seed": "ts-node ./src/database/seeds/create-seeds.ts"
   },
   "author": "",
   "license": "ISC",
