@@ -35,4 +35,11 @@ export class Project {
   @ManyToMany(() => Architect)
   @JoinTable()
   architects: Architect[] | null = null;
+
+  @Column({
+    type: 'int',
+    default: 0,
+    nullable: false,
+  })
+  spending: number = 0;
 }

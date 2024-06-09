@@ -20,6 +20,7 @@ class ProjectController {
           'project.project_id AS project_id',
           'project.name AS name',
           'project.status AS status',
+          'project.spending AS spending',
           'executor.executor_id AS executor_id',
           'COUNT(architects.architector_id) AS architectors_quantity',
         ])
