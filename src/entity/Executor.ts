@@ -4,17 +4,17 @@ import { Project } from './index';
 @Entity()
 export class Executor {
   @PrimaryGeneratedColumn()
-  executor_id: number = 0;
+  executor_id: number;
 
   @Column()
-  first_name: string = '';
+  first_name: string;
 
   @Column()
-  last_name: string = '';
+  last_name: string;
 
   @Column()
-  email: string = '';
+  email: string;
 
   @OneToMany(() => Project, (project) => project.executor)
-  project: Project | null = null;
+  projects: Project[];
 }

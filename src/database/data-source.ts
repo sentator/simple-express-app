@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
-import { Project, Executor, Architect } from '../entity';
 
 dotenv.config();
 
@@ -14,8 +13,7 @@ export const AppDataSource = new DataSource({
   database: process.env.POSTGRES_DATABASE,
   synchronize: true,
   logging: true,
-  // entities: [__dirname + '/entity/*.js'],
-  entities: [Project, Executor, Architect],
+  entities: ['./src/entity/index.ts'],
   subscribers: [],
   migrations: ['./src/database/migrations/*.ts'],
 });

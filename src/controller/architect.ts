@@ -15,14 +15,9 @@ class ArchitectController {
   async createArchitect(req: Request, res: Response) {
     try {
       const body: Omit<Architect, 'architector_id'> = req.body;
-
-      const architect = new Architect();
-      architect.first_name = body.first_name;
-      architect.last_name = body.last_name;
-      architect.email = body.email;
-      architect.license = body.license;
-
-      const result = await AppDataSource.manager.save(architect);
+      const architectRepository = AppDataSource.getRepository(Architect);
+      const architect = architectRepository.create(body);
+      const result = await architectRepository.save(architect);
 
       res.status(200).json(result);
     } catch (error) {

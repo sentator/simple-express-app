@@ -15,13 +15,9 @@ class ExecutorController {
   async createExecutor(req: Request, res: Response) {
     try {
       const body: Omit<Executor, 'executor_id'> = req.body;
-
-      const executor = new Executor();
-      executor.first_name = body.first_name;
-      executor.last_name = body.last_name;
-      executor.email = body.email;
-
-      const result = await AppDataSource.manager.save(executor);
+      const executorRepository = AppDataSource.getRepository(Executor);
+      const executor = executorRepository.create(body);
+      const result = await executorRepository.save(executor);
 
       res.status(200).json(result);
     } catch (error) {

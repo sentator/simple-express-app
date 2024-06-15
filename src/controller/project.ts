@@ -5,31 +5,26 @@ import { CreateProjectBody, UpdateProjectBody } from '../types';
 
 class ProjectController {
   async getProjects(req: Request, res: Response) {
-    const offset = req.query.offset ? Number(req.query.offset) : 0;
-    const limit = req.query.limit ? Number(req.query.limit) : 100;
-    const executorId = req.query.executor_id
-      ? Number(req.query.executor_id)
-      : null;
+    const offset = Number(req.query.offset) || 0;
+    const limit = Number(req.query.limit) || 100;
+    const executorId = Number(req.query.executor_id);
 
     try {
       const result = await AppDataSource.getRepository(Project)
         .createQueryBuilder('project')
-        .leftJoinAndSelect('project.executor', 'executor')
         .leftJoinAndSelect('project.architects', 'architects')
         .select([
           'project.project_id AS project_id',
           'project.name AS name',
           'project.status AS status',
-          'project.spending AS spending',
-          'executor.executor_id AS executor_id',
-          'COUNT(architects.architector_id) AS architectors_quantity',
+          'project.executor_id AS executor_id',
+          'COUNT(architects) AS architectors_quantity',
         ])
         .where(executorId ? 'executor_id = :executorId' : 'TRUE', {
           executorId,
         })
         .groupBy('project.project_id')
-        .addGroupBy('executor.executor_id')
-        .addGroupBy('architects.architector_id')
+        .addGroupBy('project.executor_id')
         .orderBy('project.project_id')
         .limit(limit)
         .offset(offset)
@@ -45,10 +40,12 @@ class ProjectController {
       const body: CreateProjectBody = req.body;
 
       const executorRepository = await AppDataSource.getRepository(Executor);
+      const architectRepository = await AppDataSource.getRepository(Architect);
+      const projectRepository = await AppDataSource.getRepository(Project);
+
       const executor = await executorRepository.findOneBy({
         executor_id: body.executor_id || undefined,
       });
-      const architectRepository = await AppDataSource.getRepository(Architect);
       const architects = await architectRepository.find({
         where: [
           ...(body.architects
@@ -57,13 +54,13 @@ class ProjectController {
         ],
       });
 
-      const project = new Project();
-      project.name = body.name;
-      project.status = body.status;
-      project.executor = executor;
-      project.architects = body.architects ? architects : null; //TODO: handle architects save
+      const project = projectRepository.create({
+        ...body,
+        executor,
+        architects: body.architects ? architects : null,
+      });
 
-      const result = await AppDataSource.manager.save(project);
+      const result = await projectRepository.save(project);
 
       res.status(200).json(result);
     } catch (error) {
@@ -114,8 +111,8 @@ class ProjectController {
   }
 
   async getProjectsByName(req: Request, res: Response) {
-    const offset = req.query.offset ? Number(req.query.offset) : 0;
-    const limit = req.query.limit ? Number(req.query.limit) : 100;
+    const offset = Number(req.query.offset) || 0;
+    const limit = Number(req.query.limit) || 100;
     const search = req.query.search ? `%${req.query.search}%` : null;
 
     if (!search) {
@@ -132,7 +129,7 @@ class ProjectController {
           'project.status AS status',
           'executor.executor_id AS executor_id',
         ])
-        .where(search ? 'project.name ilike :search' : 'TRUE', {
+        .where('project.name ilike :search', {
           search,
         })
         .orderBy('project.project_id')
