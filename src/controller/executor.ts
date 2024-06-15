@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { AppDataSource } from '../database/data-source';
 import { Executor } from '../entity';
+import { executorService } from '../services';
 
 class ExecutorController {
   async getExecutors(req: Request, res: Response) {
     try {
-      const result = await AppDataSource.manager.find(Executor);
+      const result = await executorService.getAll();
       res.status(200).json(result);
     } catch (error) {
       res.status(500).json(error);
@@ -15,10 +15,8 @@ class ExecutorController {
   async createExecutor(req: Request, res: Response) {
     try {
       const body: Omit<Executor, 'executor_id'> = req.body;
-      const executorRepository = AppDataSource.getRepository(Executor);
-      const executor = executorRepository.create(body);
-      const result = await executorRepository.save(executor);
 
+      const result = await executorService.create(body);
       res.status(200).json(result);
     } catch (error) {
       res.status(500).json(error);
