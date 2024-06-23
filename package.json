@@ -10,7 +10,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "seed": "ts-node ./src/database/seeds/create-seeds.ts",
-    "migration:generate": "ts-node ./node_modules/typeorm/cli migration:generate ./src/database/migrations/ -d ./src/database/data-source.ts",
+    "migration:generate": "npx ts-node ./node_modules/typeorm/cli migration:generate -d ./src/database/data-source.ts ./src/database/migrations/%NAME%",
     "migration:run": "typeorm-ts-node-commonjs migration:run -d ./src/database/data-source.ts",
     "migration:revert": "typeorm-ts-node-commonjs migration:revert -d ./src/database/data-source.ts"
   },
