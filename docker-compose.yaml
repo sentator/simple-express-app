@@ -13,6 +13,7 @@ services:
     command: npm run dev
     depends_on:
       - postgres
+      - migration
     restart: always
 
   postgres:
@@ -27,7 +28,21 @@ services:
       - $POSTGRES_PORT:$POSTGRES_PORT
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./src/database/projects_init.sql:/docker-entrypoint-initdb.d/projects_init.sql
     restart: always
+
+  migration:
+    build:
+      context: .
+    command:
+      [
+        './wait-for-it/wait-for-it.sh',
+        'postgres:$POSTGRES_PORT',
+        '--',
+        'npm',
+        'run',
+        'migration:run',
+      ]
+    depends_on:
+      - postgres
 volumes:
   pgdata:
