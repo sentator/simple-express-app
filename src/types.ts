@@ -1,7 +1,10 @@
-export type Project = {
-  project_id: number;
+export type ProjectStatus = 'not_started' | 'in_progress' | 'completed';
+
+export type CreateProjectBody = {
   name: string;
-  status: 'not_started' | 'in_progress' | 'completed';
+  status: ProjectStatus;
   executor_id: number | null;
-  architectors_quantity: number;
+  architects: number[] | null; //array if ids of architects
 };
+
+export type UpdateProjectBody = Partial<CreateProjectBody>;
