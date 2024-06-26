@@ -1,3 +1,5 @@
+import { User } from './entity';
+
 export type ProjectStatus = 'not_started' | 'in_progress' | 'completed';
 
 export type CreateProjectBody = {
@@ -8,3 +10,5 @@ export type CreateProjectBody = {
 };
 
 export type UpdateProjectBody = Partial<CreateProjectBody>;
+
+export type UserDto = Pick<User, 'user_id' | 'email'>;
