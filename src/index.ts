@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 
 import { executor, project, architect, user } from './routes';
-import { cors, errorMiddleware } from './middlewares';
+import { cors, errorMiddleware, authMiddleware } from './middlewares';
 import { AppDataSource } from './database/data-source';
 import { seedProjects } from './database/seeds';
 const app = express();
@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors);
 
-app.use('/projects', project);
+app.use('/projects', authMiddleware, project);
 app.use('/executors', executor);
 app.use('/architects', architect);
 app.use('/auth', user);
