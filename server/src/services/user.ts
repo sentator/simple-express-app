@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 
 import { AppDataSource } from '../database/data-source';
 import { User } from '../entity';
-import { tokenService } from './';
+import { tokenService } from '.';
 import ApiError from '../exceptions/apiError';
 
 class UserService {

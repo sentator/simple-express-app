@@ -8,12 +8,18 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    environment:
+      JWT_ACCESS_SECRET_KEY: $JWT_ACCESS_SECRET_KEY
+      JWT_REFRESH_SECRET_KEY: $JWT_REFRESH_SECRET_KEY
     ports:
       - $PORT:$PORT
     command: npm run dev
     depends_on:
-      - postgres
-      - migration
+      postgres:
+        condition: service_started #TODO: replace with service_healthy + helthcheck
+        restart: true
+      migration:
+        condition: service_completed_successfully
     restart: always
 
   postgres:
