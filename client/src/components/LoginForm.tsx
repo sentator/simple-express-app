@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router';
+
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
@@ -36,9 +38,12 @@ const LoginForm = () => {
             />
           </label>
         </div>
-        <button type="button" onClick={() => login(email, password)}>
-          Log in
-        </button>
+        <div>
+          <button type="button" onClick={() => login(email, password)}>
+            Log in
+          </button>
+          <Link to="/registration">I don't have an account</Link>
+        </div>
       </form>
     </div>
   );

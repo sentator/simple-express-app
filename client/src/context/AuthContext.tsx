@@ -8,17 +8,10 @@ import {
 import axios from 'axios';
 import { AuthResponse } from '../types/auth';
 import { RegistrationPayload, UserShort } from '../types/user';
+import { AuthContext as AuthContextType } from '../types/auth';
 import AuthService from '../services/AuthService';
 
-type AuthContextProps = {
-  user: UserShort | null;
-  accessToken: string | null;
-  login: (email: string, password: string) => void;
-  registration: (payload: RegistrationPayload) => void;
-  refreshAccessToken: () => void;
-};
-
-const AuthContext = createContext<AuthContextProps>({
+const AuthContext = createContext<AuthContextType>({
   user: null,
   accessToken: null,
   login: () => {},

@@ -1,3 +1,5 @@
+import { Link } from '@tanstack/react-router';
+
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
@@ -67,9 +69,12 @@ const RegistrationForm = () => {
             />
           </label>
         </div>
-        <button type="button" onClick={handleSubmit}>
-          Sign up
-        </button>
+        <div>
+          <button type="button" onClick={handleSubmit}>
+            Sign up
+          </button>
+          <Link to="/login">I have an account</Link>
+        </div>
       </form>
     </div>
   );
