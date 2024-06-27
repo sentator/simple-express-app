@@ -22,4 +22,10 @@ export default class AuthService {
   static async logout() {
     return defaultApi.post<AuthResponse>('/auth/logout');
   }
+
+  static async refreshToken() {
+    const response = await defaultApi.get<AuthResponse>('/auth/refresh');
+
+    return response.data;
+  }
 }

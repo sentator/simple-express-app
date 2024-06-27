@@ -1,12 +1,4 @@
-import {
-  createContext,
-  useState,
-  useEffect,
-  FC,
-  PropsWithChildren,
-} from 'react';
-import axios from 'axios';
-import { AuthResponse } from '../types/auth';
+import { createContext, useState, FC, PropsWithChildren } from 'react';
 import { RegistrationPayload, UserShort } from '../types/user';
 import { AuthContext as AuthContextType } from '../types/auth';
 import AuthService from '../services/AuthService';
@@ -62,27 +54,14 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   //   TODO: add mechanism of token refreshment
   const refreshAccessToken = async () => {
     try {
-      const response = await axios.get<AuthResponse>(
-        'http://localhost:5000/auth/refresh',
-        { withCredentials: true },
-      );
-      setAccessToken(response.data.access_token);
-      localStorage.setItem('accessToken', response.data.access_token);
+      const response = await AuthService.refreshToken();
+      setUser(response.user);
+      setAccessToken(response.access_token);
+      localStorage.setItem('accessToken', response.access_token);
     } catch (error) {
-      console.error('Token refresh failed', error);
+      console.error('Token refreshment failed', error);
     }
   };
-
-  useEffect(() => {
-    const interval = setInterval(
-      () => {
-        refreshAccessToken();
-      },
-      14 * 60 * 1000,
-    ); // Refresh access token every 14 minutes
-
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <AuthContext.Provider

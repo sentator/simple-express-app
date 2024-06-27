@@ -3,6 +3,8 @@ import { Project } from '../types/projects';
 
 export default class ProjectService {
   static async getProjects() {
-    return defaultApi.get<Project>('/projects');
+    const response = await defaultApi.get<Project[]>('/projects');
+
+    return response.data;
   }
 }
