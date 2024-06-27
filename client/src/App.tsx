@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { RouterProvider, createRouter } from '@tanstack/react-router';
 
-import { AuthContext, AuthProvider } from './context/AuthContext';
+import { AuthContext } from './context/AuthContext';
 import { routeTree } from './routeTree.gen';
 
 const router = createRouter({
@@ -17,11 +17,8 @@ declare module '@tanstack/react-router' {
 
 function App() {
   const authContext = useContext(AuthContext);
-  return (
-    <AuthProvider>
-      <RouterProvider router={router} context={{ auth: authContext }} />
-    </AuthProvider>
-  );
+
+  return <RouterProvider router={router} context={{ auth: authContext }} />;
 }
 
 export default App;

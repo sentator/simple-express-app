@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
@@ -10,14 +10,19 @@ const RegistrationForm = () => {
   const [lastName, setLastName] = useState<string>('');
 
   const { registration } = useContext(AuthContext);
+  const navigate = useNavigate({
+    from: '/registration',
+  });
 
-  const handleSubmit = () => {
-    registration({
+  const handleSubmit = async () => {
+    await registration({
       email,
       password,
       first_name: firstName,
       last_name: lastName,
     });
+
+    navigate({ to: '/' });
   };
 
   return (

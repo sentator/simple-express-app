@@ -14,9 +14,10 @@ import AuthService from '../services/AuthService';
 const AuthContext = createContext<AuthContextType>({
   user: null,
   accessToken: null,
-  login: () => {},
-  registration: () => {},
-  refreshAccessToken: () => {},
+  login: async () => {},
+  registration: async () => {},
+  logout: async () => {},
+  refreshAccessToken: async () => {},
 });
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -47,6 +48,17 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const logout = async () => {
+    try {
+      await AuthService.logout();
+      setUser(null);
+      setAccessToken(null);
+      localStorage.removeItem('accessToken');
+    } catch (error) {
+      console.error('Logout failed');
+    }
+  };
+
   //   TODO: add mechanism of token refreshment
   const refreshAccessToken = async () => {
     try {
@@ -74,7 +86,14 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, accessToken, login, registration, refreshAccessToken }}
+      value={{
+        user,
+        accessToken,
+        login,
+        registration,
+        logout,
+        refreshAccessToken,
+      }}
     >
       {children}
     </AuthContext.Provider>

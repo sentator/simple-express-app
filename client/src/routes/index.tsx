@@ -1,23 +1,13 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
+import HomePage from '../pages/HomePage';
 
 export const Route = createFileRoute('/')({
-  beforeLoad: ({ context, location }) => {
-    if (!context.auth.accessToken) {
+  beforeLoad: () => {
+    if (!localStorage.getItem('accessToken')) {
       throw redirect({
         to: '/login',
-        search: {
-          redirect: location.href,
-        },
       });
     }
   },
-  component: Index,
+  component: HomePage,
 });
-
-function Index() {
-  return (
-    <div>
-      <h3>Welcome Home!</h3>
-    </div>
-  );
-}

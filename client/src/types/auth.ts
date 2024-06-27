@@ -12,7 +12,8 @@ export type AuthResponse = {
 export type AuthContext = {
   user: UserShort | null;
   accessToken: string | null;
-  login: (email: string, password: string) => void;
-  registration: (payload: RegistrationPayload) => void;
-  refreshAccessToken: () => void;
+  login: (email: string, password: string) => Promise<void>;
+  registration: (payload: RegistrationPayload) => Promise<void>;
+  logout: () => Promise<void>;
+  refreshAccessToken: () => Promise<void>;
 };

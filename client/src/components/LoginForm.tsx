@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
@@ -7,7 +7,16 @@ const LoginForm = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
+  const navigate = useNavigate({
+    from: '/login',
+  });
+
   const { login } = useContext(AuthContext);
+
+  const handleSubmit = async () => {
+    await login(email, password);
+    navigate({ to: '/' });
+  };
 
   return (
     <div
@@ -39,7 +48,7 @@ const LoginForm = () => {
           </label>
         </div>
         <div>
-          <button type="button" onClick={() => login(email, password)}>
+          <button type="button" onClick={handleSubmit}>
             Log in
           </button>
           <Link to="/registration">I don't have an account</Link>
