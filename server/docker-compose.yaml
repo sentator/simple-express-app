@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  main:
+    container_name: express_app
+    build:
+      context: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      JWT_ACCESS_SECRET_KEY: $JWT_ACCESS_SECRET_KEY
+      JWT_REFRESH_SECRET_KEY: $JWT_REFRESH_SECRET_KEY
+    ports:
+      - $PORT:$PORT
+    command: npm run dev
+    depends_on:
+      postgres:
+        condition: service_started #TODO: replace with service_healthy + helthcheck
+        restart: true
+      migration:
+        condition: service_completed_successfully
+    restart: always
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+      POSTGRES_DB: $POSTGRES_DATABASE
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    ports:
+      - $POSTGRES_PORT:$POSTGRES_PORT
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  migration:
+    build:
+      context: .
+    command:
+      [
+        './wait-for-it/wait-for-it.sh',
+        'postgres:$POSTGRES_PORT',
+        '--',
+        'npm',
+        'run',
+        'migration:run',
+      ]
+    depends_on:
+      - postgres
+volumes:
+  pgdata:
