@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate, useRouter } from '@tanstack/react-router';
 
 import { useContext, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
@@ -7,6 +7,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
+  const router = useRouter();
   const navigate = useNavigate({
     from: '/login',
   });
@@ -15,7 +16,10 @@ const LoginForm = () => {
 
   const handleSubmit = async () => {
     await login(email, password);
-    navigate({ to: '/' });
+    await router.invalidate();
+    // hack to wait AuthContext to update
+    await new Promise((res) => setTimeout(res, 1));
+    navigate({ to: '/projects' });
   };
 
   return (

@@ -15,14 +15,17 @@ const RegistrationForm = () => {
   });
 
   const handleSubmit = async () => {
-    await registration({
-      email,
-      password,
-      first_name: firstName,
-      last_name: lastName,
-    });
-
-    navigate({ to: '/' });
+    try {
+      await registration({
+        email,
+        password,
+        first_name: firstName,
+        last_name: lastName,
+      });
+      navigate({ to: '/projects' });
+    } catch (error) {
+      // TODO: warn user about the error
+    }
   };
 
   return (

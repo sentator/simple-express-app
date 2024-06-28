@@ -29,15 +29,11 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   };
 
   const registration = async (payload: RegistrationPayload) => {
-    try {
-      const response = await AuthService.registration(payload);
+    const response = await AuthService.registration(payload);
 
-      setUser(response.user);
-      setAccessToken(response.access_token);
-      localStorage.setItem('accessToken', response.access_token);
-    } catch (error) {
-      console.error('Login failed', error);
-    }
+    setUser(response.user);
+    setAccessToken(response.access_token);
+    localStorage.setItem('accessToken', response.access_token);
   };
 
   const logout = async () => {
