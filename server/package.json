@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/index.ts",
+    "dev": "nodemon ./src/index.ts | pino-pretty",
     "build": "tsc --project ./",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
@@ -23,6 +23,9 @@
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.5",
+    "pino": "^9.2.0",
+    "pino-multi-stream": "^6.0.0",
+    "pino-pretty": "^11.2.1",
     "typeorm": "^0.3.20",
     "zod": "^3.23.8"
   },
@@ -33,6 +36,7 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.2",
     "@types/pg": "^8.11.5",
+    "@types/pino-multi-stream": "^5.1.6",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
     "eslint": "^8.57.0",

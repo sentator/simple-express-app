@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import ApiError from '../exceptions/apiError';
+import { logger } from '../services';
 
 export default function (
   error: unknown,
@@ -7,10 +8,8 @@ export default function (
   res: Response,
   next: NextFunction,
 ) {
-  //eslint-disable-next-line
-  console.log(error);
-
   if (error instanceof ApiError) {
+    logger.error(error.message);
     return res
       .status(error.status)
       .json({ message: error.message, errors: error.errors });

@@ -6,6 +6,7 @@ import { executor, project, architect, user } from './routes';
 import { cors, errorMiddleware, authMiddleware } from './middlewares';
 import { AppDataSource } from './database/data-source';
 import { seedProjects } from './database/seeds';
+import { logger } from './services';
 const app = express();
 
 dotenv.config();
@@ -24,16 +25,13 @@ const PORT = process.env.PORT ?? 5000;
 
 AppDataSource.initialize()
   .then(() => {
-    // eslint-disable-next-line
-    console.log('initialized DataSource');
+    logger.info('DataSource has been successfully initialized');
     seedProjects();
   })
   .catch((error) => {
-    // eslint-disable-next-line
-    console.log(error);
+    logger.error('DataSource has not been initialized');
   });
 
 app.listen(PORT, () => {
-  // eslint-disable-next-line
-  console.log(`Server running on ${PORT}.`);
+  logger.info(`Server running on ${PORT}`);
 });

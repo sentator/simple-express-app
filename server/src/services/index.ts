@@ -3,6 +3,7 @@ import executorService from './executor';
 import projectService from './project';
 import userService from './user';
 import tokenService from './token';
+import logger from './logger';
 
 export {
   architectService,
@@ -10,4 +11,5 @@ export {
   projectService,
   userService,
   tokenService,
+  logger,
 };

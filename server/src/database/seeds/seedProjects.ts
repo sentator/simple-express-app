@@ -1,4 +1,5 @@
 import { Architect, Executor, Project } from '../../entity';
+import { logger } from '../../services';
 import { AppDataSource } from '../data-source';
 
 export const seedProjects = async () => {
@@ -9,8 +10,7 @@ export const seedProjects = async () => {
   const projectsExist = await projectRepository.count();
 
   if (projectsExist) {
-    // eslint-disable-next-line
-    console.log('"seedProjects" was skipped because projects already exist');
+    logger.info('"seedProjects" was skipped because projects already exist');
     return;
   }
 
@@ -67,6 +67,5 @@ export const seedProjects = async () => {
   });
   await projectRepository.save(project2);
 
-  // eslint-disable-next-line
-  console.log('"seedProjects" completed successfully!');
+  logger.info('"seedProjects" completed successfully!');
 };
