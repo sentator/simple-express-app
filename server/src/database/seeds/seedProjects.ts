@@ -14,6 +14,8 @@ export const seedProjects = async () => {
     return;
   }
 
+  logger.info('"seedProjects" script started');
+
   const architect1 = architectRepository.create({
     first_name: 'Vasya',
     last_name: 'Ponzi',

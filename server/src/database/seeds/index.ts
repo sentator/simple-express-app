@@ -1,3 +1,7 @@
 import { seedProjects } from './seedProjects';
+import { seedUsers } from './seedUsers';
 
-export { seedProjects };
+export const runSeeds = async () => {
+  await seedProjects();
+  await seedUsers();
+};
