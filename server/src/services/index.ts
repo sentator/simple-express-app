@@ -4,6 +4,7 @@ import projectService from './project';
 import userService from './user';
 import tokenService from './token';
 import logger from './logger';
+import messageService from './message';
 
 export {
   architectService,
@@ -12,4 +13,5 @@ export {
   userService,
   tokenService,
   logger,
+  messageService,
 };
