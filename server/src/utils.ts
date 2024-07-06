@@ -1,7 +1,8 @@
 import { Response } from 'express';
 import { Jwt } from 'jsonwebtoken';
 import { AUTH_COOKIES_MAX_AGE } from './constants';
-import { UserDto } from './types';
+import { MessageDto, UserDto } from './types';
+import { Message } from './entity';
 
 export const isValidName = (name?: unknown): name is string => {
   return !!name && typeof name === 'string';
@@ -30,4 +31,9 @@ export const getUserDtoFromTokenPayload = (
   }
 
   return null;
+};
+
+export const getMessageDtoFromEntity = (messageEntity: Message): MessageDto => {
+  const { sender, receiver, ...rest } = messageEntity;
+  return { ...rest, sender_id: sender.user_id, receiver_id: receiver.user_id };
 };
